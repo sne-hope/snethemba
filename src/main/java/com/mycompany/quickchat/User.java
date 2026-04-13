@@ -4,7 +4,7 @@
  */
 package com.mycompany.quickchat;
 
-
+//this represents a user's basic information the system should identify
 class User {
     String username;
     String firstName;
