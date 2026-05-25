@@ -1,0 +1,279 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.quickchat_1_2;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+
+public class Quickchat_1_2 {
+
+    public static void main(String[] args) {
+       
+
+        Scanner scan = new Scanner(System.in);
+
+        // ---------------- REGISTER USER ----------------
+        System.out.print("Enter first name: ");
+        String firstName = scan.nextLine();
+
+        System.out.print("Enter last name: ");
+        String lastName = scan.nextLine();
+
+        System.out.print("Enter username: ");
+        String username = scan.nextLine();
+
+        System.out.print("Enter password: ");
+        String password = scan.nextLine();
+
+        System.out.print("Enter cellphone number: ");
+        String cellphone = scan.nextLine();
+
+        // Register user
+        String register =
+                Login.registerUser(firstName,
+                        username,
+                        password,
+                        cellphone,
+                        lastName);
+
+        System.out.println(register);
+
+        // Stop if registration fails
+        if (register.contains("not correctly")
+                || register.contains("incorrect")) {
+
+            System.out.println("Please fix errors.");
+            return;
+        }
+
+        // ---------------- LOGIN ----------------
+        System.out.print("\nEnter username to login: ");
+        String loginUsername = scan.nextLine();
+
+        System.out.print("Enter password to login: ");
+        String loginPassword = scan.nextLine();
+
+        boolean loginSuccess =
+                Login.loginUser(loginUsername,
+                        loginPassword);
+
+        System.out.println(
+                Login.returnLoginStatus(loginSuccess)
+        );
+
+        // Only continue if login successful
+        if (!loginSuccess) {
+            return;
+        }
+
+        // ---------------- WELCOME MESSAGE ----------------
+        System.out.println("\nWelcome to Quickchat.");
+
+        // Ask how many messages
+        System.out.print("How many messages would you like to send? ");
+        int maxMessages = scan.nextInt();
+        scan.nextLine();
+
+        // Store sent messages
+        ArrayList<Message> sentMessages = new ArrayList<>();
+
+        boolean running = true;
+
+        // Program runs until quit
+        while (running) {
+
+            System.out.println("\nMENU");
+            System.out.println("1) Send Messages");
+            System.out.println("2) Show Recently Sent Messages");
+            System.out.println("3) Quit");
+
+            System.out.print("Choose option: ");
+            String option = scan.nextLine();
+
+            switch (option) {
+
+                // -------- SEND MESSAGE --------
+                case "1":
+
+                    // Limit messages
+                    if (sentMessages.size() >= maxMessages) {
+
+                        System.out.println(
+                                "You have reached your message limit."
+                        );
+                        break;
+                    }
+
+                    Message msg = new Message();
+
+                    // Auto number
+                    msg.messageNumber =
+                            sentMessages.size() + 1;
+
+                    // Generate ID
+                    msg.messageID =
+                            Message.generateMessageID();
+
+                    // Recipient
+                    System.out.print(
+                            "Enter recipient number: "
+                    );
+
+                    String recipient =
+                            scan.nextLine();
+
+                    if (!Message.checkRecipientCell(recipient)) {
+
+                        System.out.println(
+                                "Recipient number is incorrect."
+                        );
+
+                        break;
+                    }
+
+                    msg.recipient = recipient;
+
+                    // Message
+                    System.out.print("Enter message: ");
+                    String text = scan.nextLine();
+
+                    // Max 250 characters
+                    if (text.length() > 250) {
+
+                        System.out.println(
+                                "Please enter a message of less than 250 characters."
+                        );
+
+                        break;
+                    } else {
+
+                        System.out.println(
+                                "Message sent"
+                        );
+                    }
+
+                    msg.message = text;
+
+                    // Generate hash
+                    msg.messageHash =
+                            Message.generateHash(
+                                    msg.messageID,
+                                    msg.messageNumber,
+                                    msg.message
+                            );
+
+                    // Options
+                    System.out.println("\n1) Send Message");
+                    System.out.println("2) Disregard Message");
+                    System.out.println("3) Store Message To Send Later");
+
+                    System.out.print("Choose: ");
+                    String choice =
+                            scan.nextLine();
+
+                    // SEND
+                    if (choice.equals("1")) {
+
+                        sentMessages.add(msg);
+
+                        System.out.println(
+                                "Message successfully sent"
+                        );
+
+                        // Full details
+                        System.out.println(
+                                "\nMESSAGE DETAILS"
+                        );
+
+                        System.out.println(
+                                "Message ID: "
+                                        + msg.messageID
+                        );
+
+                        System.out.println(
+                                "Message Hash: "
+                                        + msg.messageHash
+                        );
+
+                        System.out.println(
+                                "Recipient: "
+                                        + msg.recipient
+                        );
+
+                        System.out.println(
+                                "Message: "
+                                        + msg.message
+                        );
+
+                    }
+
+                    // DELETE
+                    else if (choice.equals("2")) {
+
+                        System.out.println(
+                                "Press 0 to delete the message"
+                        );
+
+                        String delete =
+                                scan.nextLine();
+
+                        if (delete.equals("0")) {
+
+                            System.out.println(
+                                    "Message deleted."
+                            );
+                        }
+                    }
+
+                    // STORE
+                    else if (choice.equals("3")) {
+
+                        Message.storeMessage(msg);
+
+                        System.out.println(
+                                "Message successfully stored"
+                        );
+                    }
+
+                    break;
+
+                // -------- RECENT MESSAGES --------
+                case "2":
+
+                    System.out.println(
+                            "Coming soon."
+                    );
+
+                    break;
+
+                // -------- QUIT --------
+                case "3":
+
+                    running = false;
+
+                    System.out.println(
+                            "Total number of messages sent: "
+                                    + sentMessages.size()
+                    );
+
+                    System.out.println(
+                            "Thank you for using QuickChat."
+                    );
+
+                    break;
+
+                default:
+                    System.out.println(
+                            "Invalid option."
+                    );
+            }
+        }
+
+        scan.close();
+    }
+}
+    
+
