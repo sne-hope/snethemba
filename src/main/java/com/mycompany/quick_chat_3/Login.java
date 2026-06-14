@@ -1,0 +1,107 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.quick_chat_3;
+
+
+class Login {
+    
+    
+
+// This class handles registration and login
+
+    static User registeredUser = new User();
+
+    // Checks if the username is correct
+    static boolean checkUserName(String username) {
+        return username.contains("_") && username.length() <= 5;
+    }
+
+    // Check if the password is inputted correctly
+    static boolean checkPasswordComplexity(String password) {
+
+        if (password.length() < 8) {
+            return false;
+        }
+
+        if (!password.matches(".*[A-Z].*")) {
+            return false;
+        }
+
+        if (!password.matches(".*\\d.*")) {
+            return false;
+        }
+
+        if (!password.matches(".*[!@#$%^&*()].*")) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // Check if the cellphone number is inputted correctly
+    static boolean checkCellPhoneNumber(String cellphone) {
+
+        return cellphone.startsWith("+")
+                && cellphone.length() <= 13;
+    }
+    
+    // this part registers the user
+    static String registerUser(String firstName,
+                               String username,
+                               String password,
+                               String cellphone,
+                               String lastName) {
+
+        String errorMessage = "";
+
+        if (!checkUserName(username)) {
+            errorMessage += "Username is not correctly formatted.\n";
+        }
+
+        if (!checkPasswordComplexity(password)) {
+            errorMessage += "Password is not correctly formatted.\n";
+        }
+
+        if (!checkCellPhoneNumber(cellphone)) {
+            errorMessage += "Cellphone number is incorrect.\n";
+        }
+
+    
+        if (!errorMessage.equals("")) {
+            return errorMessage;
+        }
+
+        // this part saves the registration of the user
+        registeredUser.firstName = firstName;
+        registeredUser.lastName = lastName;
+        registeredUser.username = username;
+        registeredUser.password = password;
+        registeredUser.cellphone = cellphone;
+
+        return "Registration successful!";
+    }
+
+    // this checks the login
+    static boolean loginUser(String username, String password) {
+
+        return username.equals(registeredUser.username)
+                && password.equals(registeredUser.password);
+    }
+
+    // this part output the login message 
+    static String returnLoginStatus(boolean loggedIn) {
+
+        if (loggedIn) {
+            return "Welcome back "
+                    + registeredUser.firstName
+                    + " "
+                    + registeredUser.lastName;
+        } else {
+            return "Login failed.";
+        }
+    }
+}
+    
+
